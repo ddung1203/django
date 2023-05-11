@@ -6,13 +6,13 @@ pipeline {
     dockerhubCredential='dockerhub'
     gitEmail='jeonjungseok1203@gmail.com'
     gitName='Joongseok Jeon'
-    gitAddress=''
+    gitAddress='https://github.com/ddung1203/django'
   }
 
   stages {
     stage('Checkout Application Git Branch') {
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: 'https://github.com/ddung1203/django']]])
+        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: gitAddress]]])
       }
       post {
         failure {
@@ -79,7 +79,7 @@ pipeline {
         sh "git commit -m 'fix:django ${currentBuild.number} image versioning'"
         sh "git branch -M main"
         sh "git remote remove origin"
-        sh "git remote add origin <ssh 깃 주소>"
+        sh "git remote add origin git@github.com:ddung1203/django.git"
         sh "git checkout main"
         sh "git push -u origin main"
       }
