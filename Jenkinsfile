@@ -28,9 +28,15 @@ pipeline {
 
     stage('Docker Image Build') {
       steps{
-        sh "docker build -t django ."
-        sh "docker tag ddung1203/django:${BUILD_NUMBER}"
-        sh "docker tag ddung1203/django:latest"
+        // sh "docker build -t django ."
+        // sh "docker tag ddung1203/django:${BUILD_NUMBER}"
+        // sh "docker tag ddung1203/django:latest"
+        script {
+                    docker.withRegistry('https://registry.hub.docker.com', dockerhubCredential) {
+                        def app = docker.build("ddung1203/django:${BUILD_NUMBER}")
+                        app.push()
+                    }
+                }
       }
       post {
         success {
@@ -44,26 +50,26 @@ pipeline {
       }
     }
 
-    stage('Docker Image Push'){
-      steps {
-        script{
-          docker.withRegistry("https://registry.hub.docker.com", dockerhubCredential) {
-                      docker.image("ddung1203/django:${BUILD_NUMBER}").push()
-                      docker.image("ddung1203/django:latest").push()
-                    }
-        }
-      }
-      post {
-        success {
-          echo "The deploy stage successfully."
-          slackSend (color: '#0AC9FF', message: "SUCCESS: Docker Image Upload SUCCESS")
-        }
-        failure {
-          echo "The deploy stage failed."
-          slackSend (color: '#FF0000', message: "FAILED: Docker Image Upload FAILED")
-        }
-      }
-    }
+    // stage('Docker Image Push'){
+    //   steps {
+    //     script{
+    //       docker.withRegistry("https://registry.hub.docker.com", dockerhubCredential) {
+    //                   docker.image("ddung1203/django:${BUILD_NUMBER}").push()
+    //                   docker.image("ddung1203/django:latest").push()
+    //                 }
+    //     }
+    //   }
+    //   post {
+    //     success {
+    //       echo "The deploy stage successfully."
+    //       slackSend (color: '#0AC9FF', message: "SUCCESS: Docker Image Upload SUCCESS")
+    //     }
+    //     failure {
+    //       echo "The deploy stage failed."
+    //       slackSend (color: '#FF0000', message: "FAILED: Docker Image Upload FAILED")
+    //     }
+    //   }
+    // }
 
     stage('Kubernetes Manifest Update') {
       steps {
