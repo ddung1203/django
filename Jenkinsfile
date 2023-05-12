@@ -69,7 +69,7 @@ pipeline {
     stage('Kubernetes Manifest Update') {
       steps {
         script{
-          withCredentials(credentialsId: githubCredential) {
+          withCredentials([string(credentialsId: githubCredential, variable: 'GITHUB_TOKEN')]) {
             sh """
               git config --global user.email ${gitEmail}
               git config --global user.name ${gitName}
