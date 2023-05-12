@@ -68,18 +68,31 @@ pipeline {
 
     stage('Kubernetes Manifest Update') {
       steps {
-        script{
-          withCredentials([string(credentialsId: githubCredential, variable: 'GITHUB_TOKEN')]) {
-            sh """
-              git config --global user.email ${gitEmail}
-              git config --global user.name ${gitName}
-              sed -i 's/django:.*/django:${currentBuild.number}/g' argocd/values.yaml
-              git add .
-              git commit -m 'fix:django ${currentBuild.number} image versioning'
-              git push origin main
-              """
-          }
-        }
+        git credentialsId: githubCredential, url: gitAddress, branch: 'main'
+        
+        sh """
+          git config --global user.email ${gitEmail}
+          git config --global user.name ${gitName}
+          sed -i 's/django:.*/django:${currentBuild.number}/g' argocd/values.yaml
+          git add .
+          git commit -m 'fix:django ${currentBuild.number} image versioning'
+          git branch -M main
+          git remote remove origin
+          git remote add origin git@github.com:ddung1203/django.git
+          git push -u origin main
+        """
+        // script{
+        //   withCredentials([string(credentialsId: githubCredential, variable: 'GITHUB_TOKEN')]) {
+        //     sh """
+        //       git config --global user.email ${gitEmail}
+        //       git config --global user.name ${gitName}
+        //       sed -i 's/django:.*/django:${currentBuild.number}/g' argocd/values.yaml
+        //       git add .
+        //       git commit -m 'fix:django ${currentBuild.number} image versioning'
+        //       git push origin main
+        //       """
+        //   }
+        // }
       }
       post {
         failure {
