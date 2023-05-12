@@ -78,11 +78,7 @@ pipeline {
         sh "sed -i 's/django:.*/django:${currentBuild.number}/g' argocd/values.yaml"
         sh "git add ."
         sh "git commit -m 'fix:django ${currentBuild.number} image versioning'"
-        sh "git branch -M main"
-        sh "git remote remove origin"
-        sh "git remote add origin git@github.com:ddung1203/django.git"
-        sh "git checkout main"
-        sh "git push -u origin main"
+        sh "git push origin main"
       }
       post {
         failure {
