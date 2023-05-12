@@ -68,17 +68,18 @@ pipeline {
 
     stage('Kubernetes Manifest Update') {
       steps {
-        git credentialsId: githubCredential,
-            url: gitAddress,
-            branch: 'main'  
-
-        // 이미지 태그 변경 후 메인 브랜치에 push
-        sh "git config --global user.email ${gitEmail}"
-        sh "git config --global user.name ${gitName}"
-        sh "sed -i 's/django:.*/django:${currentBuild.number}/g' argocd/values.yaml"
-        sh "git add ."
-        sh "git commit -m 'fix:django ${currentBuild.number} image versioning'"
-        sh "git push origin main"
+        script{
+          withCredentials((credentialsId: githubCredential)) {
+            sh """
+              git config --global user.email ${gitEmail}
+              git config --global user.name ${gitName}
+              sed -i 's/django:.*/django:${currentBuild.number}/g' argocd/values.yaml
+              git add .
+              git commit -m 'fix:django ${currentBuild.number} image versioning'
+              git push origin main
+              """
+          }
+        }
       }
       post {
         failure {
