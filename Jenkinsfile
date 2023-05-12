@@ -69,7 +69,7 @@ pipeline {
     stage('Kubernetes Manifest Update') {
       steps {
         git credentialsId: githubCredential,
-            url: 'jeonjungseok1203@gmail.com',
+            url: gitAddress,
             branch: 'main'  
 
         // 이미지 태그 변경 후 메인 브랜치에 push
