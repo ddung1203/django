@@ -1,0 +1,3 @@
+app_name: django-app-deployment
+app_label: django-app
+app_image: ddung1203/django:24
