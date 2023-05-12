@@ -28,8 +28,8 @@ pipeline {
 
     stage('Docker Image Build') {
       steps{
-        sh "docker build -t ddung1203/django:${BUILD_NUMBER}"
-        sh "docker build -t ddung1203/django:latest"
+        sh "docker build -t ddung1203/django:${BUILD_NUMBER} ."
+        sh "docker build -t ddung1203/django:latest ."
       }
       post {
         success {
