@@ -45,17 +45,18 @@ pipeline {
 
     stage('Docker Image Push'){
       steps {
-        script{
-          docker.withRegistry("https://registry.hub.docker.com", dockerhubCredential) {
-                      docker.image("ddung1203/django:${BUILD_NUMBER}").push()
-                      docker.image("ddung1203/django:latest").push()
-                    }
-        }
+        withDockerRegistry(credentialsId: dockerhubCredential, url= '') {
+            sh "docker push ddung1203/django:${BUILD_NUMBER}"
+            sh "docker push ddung1203/django:latest"
+           }
+
       }
       post {
         success {
           echo "The deploy stage successfully."
           slackSend (color: '#0AC9FF', message: "SUCCESS: Docker Image Upload SUCCESS")
+          sh "docker rmi ddung1203/django:${BUILD_NUMBER}"
+          sh "docker rmi ddung1203/django:latest"
         }
         failure {
           echo "The deploy stage failed."
