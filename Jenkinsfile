@@ -45,7 +45,7 @@ pipeline {
 
     stage('Docker Image Push'){
       steps {
-        withDockerRegistry(credentialsId: dockerhubCredential, url= '') {
+        withDockerRegistry(credentialsId: dockerhubCredential, url= 'https://hub.docker.com/v2/') {
             sh "docker push ddung1203/django:${BUILD_NUMBER}"
             sh "docker push ddung1203/django:latest"
            }
