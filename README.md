@@ -21,7 +21,18 @@ python3 manage.py createsuperuser
 ```
 
 ``` bash
+# Django Shell
+python3 manage.py shell
 
+from blog.models import Post
+Post.objects.all()
+> <QuerySet [<Post: 첫번째 글>]>
+
+from django.contrib.auth.models import User
+me = User.objects.get(username='ddung1203')
+
+Post.objects.create(author=me, title='Sample title in InteractiveConsole', text='Test')
+<Post: Sample title in InteractiveConsole>
 ```
 
 ``` bash
